@@ -1,15 +1,22 @@
 package com.codeup.blog.controllers;
 
+import com.codeup.blog.repository.PostRepository;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class PostController {
+    private final PostRepository postRepo;
 
-    @GetMapping("/posts")
-    @ResponseBody
-    public String post() {
-        return "posts index page";
+    public PostController(PostRepository postRepo){
+        this.postRepo = postRepo;
+    }
+
+    @RequestMapping(path = "/posts", method = RequestMethod.GET)
+    public String showAllPosts(Model model) {
+        model.addAttribute("posts", postRepo.findAll());
+        return "posts/index";
     }
 
     @GetMapping("/posts/{id}")
