@@ -1,10 +1,10 @@
-
 .header {
     font-size: 5em;
     text-align: center;
     background-color: aqua;
     border-color: black;
     border-style: double;
+    justify-content: center;
 }
 
 .footer {
