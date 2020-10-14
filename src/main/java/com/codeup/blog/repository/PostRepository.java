@@ -13,7 +13,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     // The following method is equivalent to the built in `getOne` method, there's no need to create this example
     @Query("from Post p where p.id like ?1")
-    Post getAdById(long id);
+    Post getPostById(long id);
 
     // The following method shows you how to use named parameters in a HQL custom query:
     @Query("from Post p where p.title like %:term%")
