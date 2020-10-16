@@ -1,4 +1,4 @@
 package com.codeup.blog.models;
 
-public class Post {
+public class UserWithRoles {
 }
