@@ -8,11 +8,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    public UserDetailsLoader usersLoader;
+    private UserDetailsLoader usersLoader;
 
     public SecurityConfiguration(UserDetailsLoader usersLoader) {
         this.usersLoader = usersLoader;
@@ -24,39 +23,38 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-                .userDetailsService(usersLoader)
-                .passwordEncoder(passwordEncoder())
+                .userDetailsService(usersLoader) // How to find users by their username
+                .passwordEncoder(passwordEncoder()) // How to encode and verify passwords
         ;
     }
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                /********* Login Configuration *********/
+                /* Login configuration */
                 .formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/posts")
-                .permitAll()
-                /********** Logout Configuration **********/
+                .defaultSuccessUrl("/profile") // user's home page, it can be any URL
+                .permitAll() // Anyone can go to the login page
+                /* Logout configuration */
                 .and()
                 .logout()
-                .logoutSuccessUrl("/login?logout")
-                /********** Pages that can be viewed by anyone ************/
+                .logoutSuccessUrl("/login?logout") // append a query string value
+                /* Pages that can be viewed without having to log in */
                 .and()
                 .authorizeRequests()
-                .antMatchers("/", "/posts")
+                .antMatchers("/") // anyone can see the home and the ads pages
                 .permitAll()
-                /************** Pages that DO require authentication ***********/
+                /* Pages that require authentication */
                 .and()
                 .authorizeRequests()
-                .antMatchers("/posts/create", "/posts/edit/{id}")
+                .antMatchers(
+                        "/messages", // only authenticated users can view messages
+                        "/profile/the-plan"// ******something else logged in users can see - might change later
+                )
                 .authenticated()
         ;
-
     }
-
-
 }
